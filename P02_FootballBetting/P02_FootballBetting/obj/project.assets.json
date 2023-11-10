@@ -2055,11 +2055,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\E5540\\source\\repos\\ENTITY FRAMEWORK\\P02_FootballBetting\\P02_FootballBetting\\P02_FootballBetting.csproj",
+      "projectUniqueName": "C:\\Users\\E5540\\source\\repos\\Entity-Framework\\P02_FootballBetting\\P02_FootballBetting\\P02_FootballBetting.csproj",
       "projectName": "P02_FootballBetting",
-      "projectPath": "C:\\Users\\E5540\\source\\repos\\ENTITY FRAMEWORK\\P02_FootballBetting\\P02_FootballBetting\\P02_FootballBetting.csproj",
+      "projectPath": "C:\\Users\\E5540\\source\\repos\\Entity-Framework\\P02_FootballBetting\\P02_FootballBetting\\P02_FootballBetting.csproj",
       "packagesPath": "C:\\Users\\E5540\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\E5540\\source\\repos\\ENTITY FRAMEWORK\\P02_FootballBetting\\P02_FootballBetting\\obj\\",
+      "outputPath": "C:\\Users\\E5540\\source\\repos\\Entity-Framework\\P02_FootballBetting\\P02_FootballBetting\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\E5540\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -2076,11 +2076,11 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\Users\\E5540\\source\\repos\\ENTITY FRAMEWORK\\P02_FootballBetting\\P02_FootballBetting.Data.Models\\P02_FootballBetting.Data.Models.csproj": {
-              "projectPath": "C:\\Users\\E5540\\source\\repos\\ENTITY FRAMEWORK\\P02_FootballBetting\\P02_FootballBetting.Data.Models\\P02_FootballBetting.Data.Models.csproj"
+            "C:\\Users\\E5540\\source\\repos\\Entity-Framework\\P02_FootballBetting\\P02_FootballBetting.Data.Models\\P02_FootballBetting.Data.Models.csproj": {
+              "projectPath": "C:\\Users\\E5540\\source\\repos\\Entity-Framework\\P02_FootballBetting\\P02_FootballBetting.Data.Models\\P02_FootballBetting.Data.Models.csproj"
             },
-            "C:\\Users\\E5540\\source\\repos\\ENTITY FRAMEWORK\\P02_FootballBetting\\P02_FootballBetting.Data\\P02_FootballBetting.Data.csproj": {
-              "projectPath": "C:\\Users\\E5540\\source\\repos\\ENTITY FRAMEWORK\\P02_FootballBetting\\P02_FootballBetting.Data\\P02_FootballBetting.Data.csproj"
+            "C:\\Users\\E5540\\source\\repos\\Entity-Framework\\P02_FootballBetting\\P02_FootballBetting.Data\\P02_FootballBetting.Data.csproj": {
+              "projectPath": "C:\\Users\\E5540\\source\\repos\\Entity-Framework\\P02_FootballBetting\\P02_FootballBetting.Data\\P02_FootballBetting.Data.csproj"
             }
           }
         }

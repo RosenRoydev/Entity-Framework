@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rBpeKRKHRWrruxoHLsoPThJ3/Bdm6zkx4RFn8OSHf218W3XExkrHFrExs9Vj8UNKdmNe33HRPAKclOZxYihH1w==",
+  "dgSpecHash": "oVBmlchldic7LmzIXaiVGG5MXbyE4kVYUF9J+M2h4R251QZKmFysiTTKxjVQX05Ux1wt4RLRA61WHUEZgsw6sw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\E5540\\source\\repos\\ENTITY FRAMEWORK\\P02_FootballBetting\\P02_FootballBetting.Data\\P02_FootballBetting.Data.csproj",
+  "projectFilePath": "C:\\Users\\E5540\\source\\repos\\Entity-Framework\\P02_FootballBetting\\P02_FootballBetting.Data\\P02_FootballBetting.Data.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\E5540\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\E5540\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",

@@ -2014,11 +2014,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\E5540\\source\\repos\\ENTITY FRAMEWORK\\P02_FootballBetting\\P02_FootballBetting.Data.Models\\P02_FootballBetting.Data.Models.csproj",
+      "projectUniqueName": "C:\\Users\\E5540\\source\\repos\\Entity-Framework\\P02_FootballBetting\\P02_FootballBetting.Data.Models\\P02_FootballBetting.Data.Models.csproj",
       "projectName": "P02_FootballBetting.Data.Models",
-      "projectPath": "C:\\Users\\E5540\\source\\repos\\ENTITY FRAMEWORK\\P02_FootballBetting\\P02_FootballBetting.Data.Models\\P02_FootballBetting.Data.Models.csproj",
+      "projectPath": "C:\\Users\\E5540\\source\\repos\\Entity-Framework\\P02_FootballBetting\\P02_FootballBetting.Data.Models\\P02_FootballBetting.Data.Models.csproj",
       "packagesPath": "C:\\Users\\E5540\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\E5540\\source\\repos\\ENTITY FRAMEWORK\\P02_FootballBetting\\P02_FootballBetting.Data.Models\\obj\\",
+      "outputPath": "C:\\Users\\E5540\\source\\repos\\Entity-Framework\\P02_FootballBetting\\P02_FootballBetting.Data.Models\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\E5540\\AppData\\Roaming\\NuGet\\NuGet.Config",
