@@ -7,16 +7,17 @@
     using BookShop.Models.Enums;
     using System.Globalization;
     using Microsoft.EntityFrameworkCore;
+    using System.Text;
 
     public class StartUp
     {
         public static void Main()
         {
             using var db = new BookShopContext();
-            //DbInitializer.ResetDatabase(db);
-          
-            var result = GetTotalProfitByCategory(db);
-            Console.WriteLine(result);
+            DbInitializer.ResetDatabase(db);
+
+            Console.WriteLine(RemoveBooks(db));
+
         }
 
 
@@ -159,6 +160,44 @@
             string result = string.Join(Environment.NewLine, books.Select(b => $"{b.Name} ${b.Profit:f2}"));
             return result;
                 
+        }
+        public static string GetMostRecentBooks(BookShopContext context)
+        {
+            var books = context.Categories.Select(b => new
+            {
+                CategoryName = b.Name,
+                bookNames = b.CategoryBooks.OrderByDescending(b => b.Book.ReleaseDate).
+                Select(b => new { b.Book.Title ,
+                   b.Book.ReleaseDate.Value.Year} ).Take(3).ToList(),
+                Year = b.CategoryBooks.Select(b => b.Book.ReleaseDate.Value.Year)
+            }).OrderBy(b => b.CategoryName) ;
+            StringBuilder sb = new();
+            foreach (var book in books)
+            {
+                sb.AppendLine($"--{book.CategoryName}");
+                foreach (var bookName in book.bookNames)
+                {
+                    sb.AppendLine($"{bookName.Title} ({bookName.Year})");
+                }
+            }
+            return sb.ToString().TrimEnd();
+        }
+        public static void IncreasePrices(BookShopContext context)
+        {
+            var books = context.Books.Where(b => b.ReleaseDate!.Value.Year < 2010).ToList();
+            foreach (var book in books)
+            {
+                book.Price += 5;
+            }
+            context.SaveChanges();
+        }
+        public static int RemoveBooks(BookShopContext context)
+        {
+            context.ChangeTracker.Clear();
+            var books = context.Books.Where(b => b.Copies < 4200).ToList();
+           context.RemoveRange(books);
+           return context.SaveChanges();
+            
         }
     }
 
