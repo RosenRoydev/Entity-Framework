@@ -36,10 +36,20 @@ namespace CarDealer
         {
             var parts = JsonConvert.DeserializeObject<List<Part>>(inputJson);
 
-            var validParts = parts.Where(p => p.SupplierId != null).ToList();
-         
-                context.AddRange(validParts);
-                context.SaveChanges();
+            var validParts = new List<Part>();
+
+            foreach (var part in parts)
+            {
+                var existingSupplier = context.Suppliers.Find(part.SupplierId);
+
+                if (existingSupplier != null)
+                {
+                    validParts.Add(part);
+                }
+            }
+
+            context.Parts.AddRange(validParts);
+            context.SaveChanges();
 
             return $"Successfully imported {validParts.Count}.";
         }
