@@ -2,6 +2,7 @@
 using CarDealer.Data;
 using CarDealer.DTOs.Import;
 using CarDealer.Models;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace CarDealer
@@ -30,8 +31,11 @@ namespace CarDealer
             //Console.WriteLine(ImportCustomers(context,jsonCustomers));
 
             //5.
-            string jsonSales = File.ReadAllText("../../../Datasets/sales.json");
-            Console.WriteLine(ImportSales(context,jsonSales));
+            //string jsonSales = File.ReadAllText("../../../Datasets/sales.json");
+            //Console.WriteLine(ImportSales(context,jsonSales));
+
+            //6.
+            Console.WriteLine(GetOrderedCustomers(context));
         }
         public static IMapper CreateMapper()
         {
@@ -138,6 +142,25 @@ namespace CarDealer
             context.Sales.AddRange(sales);
             context.SaveChanges();
             return $"Successfully imported {sales.Count()}.";
+        }
+
+        //6.
+        public static string GetOrderedCustomers(CarDealerContext context)
+        {
+            var customers = context.Customers
+            .AsNoTracking()
+            .OrderBy(c => c.BirthDate)
+            .ThenBy(c => c.IsYoungDriver)
+            .Select(c => new
+            {
+                c.Name,
+                BirthDate = c.BirthDate.ToString("dd/MM/yyyy"),
+                c.IsYoungDriver
+            })
+            .ToArray();
+
+            string jsonOrderedCustomers= JsonConvert.SerializeObject(customers);
+            return jsonOrderedCustomers;
         }
     }
 }
