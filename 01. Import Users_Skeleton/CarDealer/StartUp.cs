@@ -4,6 +4,7 @@ using CarDealer.DTOs.Import;
 using CarDealer.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace CarDealer
 {
@@ -44,7 +45,13 @@ namespace CarDealer
             //Console.WriteLine(GetLocalSuppliers(context));
 
             //9.
-            Console.WriteLine(GetCarsWithTheirListOfParts(context));
+            //Console.WriteLine(GetCarsWithTheirListOfParts(context));
+
+            //10.
+            // Console.WriteLine(GetTotalSalesByCustomer(context));
+
+            //11.
+            Console.WriteLine(GetSalesWithAppliedDiscount(context));
         }
         public static IMapper CreateMapper()
         {
@@ -230,6 +237,49 @@ namespace CarDealer
             string jsonCarsWithParts = JsonConvert.SerializeObject(carsWithParts);
             return jsonCarsWithParts;
            
+        }
+
+        //10.
+        public static string GetTotalSalesByCustomer(CarDealerContext context)
+        {
+            var customersWithCars = context.Customers.Where(c => c.Sales.Count() > 0).
+                Select(c => new
+                {
+                    fullName = c.Name,
+                    boughtCars = c.Sales.Count(),
+                    spentMoney = c.Sales.Sum(s => s.Car.PartsCars.Sum(pc => pc.Part.Price))
+
+
+                }
+
+
+                ).OrderByDescending(c => c.spentMoney)
+                .ThenByDescending(c => c.boughtCars)
+                .ToArray();
+
+            string jsoncustumersWithCars = JsonConvert.SerializeObject(customersWithCars,Formatting.Indented);
+            return jsoncustumersWithCars;
+        }
+
+        //11.
+        public static string GetSalesWithAppliedDiscount(CarDealerContext context)
+        {
+            var information = context.Sales.Take(10).Select(s => new
+            {
+                ccar = new
+                {
+                    Make = s.Car.Make,
+                    Model = s.Car.Model,
+                    TraveledDistance = s.Car.TraveledDistance
+                },
+                customerName = s.Customer.Name,
+                discount = s.Discount.ToString("f2"),
+                price = s.Car.PartsCars.Sum(pc => pc.Part.Price).ToString("f2"),
+                priceWithDiscount = ((s.Car.PartsCars.Sum(pc => pc.Part.Price) * (1 - s.Discount / 100))).ToString("f2")
+             }).ToArray();
+
+            string jsonCarInfo = JsonConvert.SerializeObject (information,Formatting.Indented);
+            return jsonCarInfo;
         }
     }
 }
