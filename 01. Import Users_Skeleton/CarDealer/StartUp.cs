@@ -35,7 +35,16 @@ namespace CarDealer
             //Console.WriteLine(ImportSales(context,jsonSales));
 
             //6.
-            Console.WriteLine(GetOrderedCustomers(context));
+            // Console.WriteLine(GetOrderedCustomers(context));
+
+            //7.
+            //Console.WriteLine(GetCarsFromMakeToyota(context));
+
+            //8.
+            //Console.WriteLine(GetLocalSuppliers(context));
+
+            //9.
+            Console.WriteLine(GetCarsWithTheirListOfParts(context));
         }
         public static IMapper CreateMapper()
         {
@@ -161,6 +170,66 @@ namespace CarDealer
 
             string jsonOrderedCustomers= JsonConvert.SerializeObject(customers);
             return jsonOrderedCustomers;
+        }
+
+        //7.
+        public static string GetCarsFromMakeToyota(CarDealerContext context)
+        {
+            var carsToyota = context.Cars.
+             
+                Where(c => c.Make == "Toyota").
+                Select(c => new
+                {
+                    c.Id,
+                    c.Make,
+                    c.Model,
+                    c.TraveledDistance
+
+                }). OrderBy(c => c.Model).
+                ThenByDescending(c => c.TraveledDistance).ToArray();
+            string jsonToyotaCars = JsonConvert.SerializeObject(carsToyota);
+            return jsonToyotaCars;
+        }
+
+        //8.
+        public static string GetLocalSuppliers(CarDealerContext context)
+        {
+            var suppliers = context.Suppliers.
+                Where(s => s.IsImporter == false).
+                Select(s => new
+                {
+                    s.Id,
+                    s.Name,
+                    PartsCount = s.Parts.Count(),
+                }).ToArray();
+            
+            string jsonSuppliers = JsonConvert.SerializeObject(suppliers);
+            return jsonSuppliers;
+        }
+
+        //9.
+        public static string GetCarsWithTheirListOfParts(CarDealerContext context)
+        {
+            var carsWithParts = context.Cars.Select(c => new
+            {
+                car = new
+                {
+                    c.Make,
+                    c.Model,
+                    c.TraveledDistance,
+                },
+
+
+                parts = c.PartsCars.Select(c => new
+                {
+                    c.Part.Name,
+                    Price = c.Part.Price.ToString("f2")
+                })
+            }).ToList();
+
+            string jsonCarsWithParts = JsonConvert.SerializeObject(carsWithParts);
+            return jsonCarsWithParts;
+           
         }
     }
 }
