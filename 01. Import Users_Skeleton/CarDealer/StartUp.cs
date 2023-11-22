@@ -266,17 +266,20 @@ namespace CarDealer
         {
             var information = context.Sales.Take(10).Select(s => new
             {
-                ccar = new
+                car = new
                 {
                     Make = s.Car.Make,
-                    Model = s.Car.Model,
-                    TraveledDistance = s.Car.TraveledDistance
+                   Model = s.Car.Model,
+                   TravaledDistance = s.Car.TraveledDistance
                 },
                 customerName = s.Customer.Name,
                 discount = s.Discount.ToString("f2"),
                 price = s.Car.PartsCars.Sum(pc => pc.Part.Price).ToString("f2"),
-                priceWithDiscount = ((s.Car.PartsCars.Sum(pc => pc.Part.Price) * (1 - s.Discount / 100))).ToString("f2")
-             }).ToArray();
+                      //s.Car.PartsCars.Sum(pc => pc.Part.Price).ToString("f2")
+                priceWithDiscount = (s.Car.PartsCars.Sum(pc => pc.Part.Price)*(1-s.Discount/100m)).ToString("f2")
+                //priceWithDiscount = ((s.Car.PartsCars.Sum(pc => pc.Part.Price) * (1 - s.Discount / 100))).ToString("f2")
+
+            }).ToArray();
 
             string jsonCarInfo = JsonConvert.SerializeObject (information,Formatting.Indented);
             return jsonCarInfo;
