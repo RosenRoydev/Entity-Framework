@@ -15,8 +15,8 @@
 
         public decimal Price { get; set; }
 
-        public int? SellerId { get; set; }
-        public User? Seller { get; set; } = null!;
+        public int SellerId { get; set; }
+        public User Seller { get; set; } = null!;
 
         public int? BuyerId { get; set; }
         public User? Buyer { get; set; } = null!;

@@ -72,7 +72,7 @@ namespace ProductShop.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("SellerId")
+                    b.Property<int>("SellerId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -135,7 +135,9 @@ namespace ProductShop.Migrations
 
                     b.HasOne("ProductShop.Models.User", "Seller")
                         .WithMany("ProductsSold")
-                        .HasForeignKey("SellerId");
+                        .HasForeignKey("SellerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Buyer");
 
