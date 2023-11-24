@@ -38,7 +38,10 @@ namespace ProductShop
             // Console.WriteLine(GetSoldProducts(context));
 
             //7.
-            Console.WriteLine(GetCategoriesByProductsCount(context));
+            //Console.WriteLine(GetCategoriesByProductsCount(context));
+
+            //8.
+            Console.WriteLine(GetUsersWithProducts(context));
 
         }
 
@@ -192,6 +195,49 @@ namespace ProductShop
             return sb.ToString().TrimEnd();
         }
 
+        //8.
+        public static string GetUsersWithProducts(ProductShopContext context)
+        {
+            var usersInfo = context
+                .Users
+                .Where(u => u.ProductsSold.Any())
+                .OrderByDescending(u => u.ProductsSold.Count)
+                .Select(u => new UserInfo()
+                {
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Age = u.Age,
+                    SoldProducts = new SoldProductsCount()
+                    {
+                        Count = u.ProductsSold.Count,
+                        Products = u.ProductsSold.Select(p => new SoldProduct()
+                        {
+                            Name = p.Name,
+                            Price = p.Price
+                        })
+                        .OrderByDescending(p => p.Price)
+                        .ToArray()
+                    }
+                })
+                .Take(10)
+                .ToArray();
+
+            ExportUserCountDto exportUserCountDto = new ExportUserCountDto()
+            {
+                Count = context.Users.Count(u => u.ProductsSold.Any()),
+                Users = usersInfo
+            };
+
+            XmlSerializerNamespaces ns = new XmlSerializerNamespaces() ;
+            ns.Add(string.Empty,string.Empty);
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(ExportUserCountDto),new XmlRootAttribute("Users"));
+
+            StringBuilder sb = new StringBuilder();
+            using StringWriter sw = new StringWriter(sb);
+            xmlSerializer.Serialize(sw, exportUserCountDto, ns);
+            return sb.ToString().TrimEnd();
+
+        }
 
     }   
 }
