@@ -11,6 +11,8 @@ namespace CarDealer
         public static void Main()
         {
             CarDealerContext context = new CarDealerContext();
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
             //9.
             string suppliersXml = File.ReadAllText("../../../Datasets/suppliers.xml");
             Console.WriteLine(ImportSuppliers(context,suppliersXml));

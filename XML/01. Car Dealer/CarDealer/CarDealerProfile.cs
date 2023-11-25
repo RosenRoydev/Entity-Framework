@@ -8,9 +8,8 @@ namespace CarDealer
     {
         public CarDealerProfile()
         {
-            CreateMap<ImportSupplierDTO, Supplier>()
-             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-             .ForMember(dest => dest.IsImporter, opt => opt.MapFrom(src => src.IsImporter));
+            CreateMap<ImportSupplierDTO, Supplier>();
+           
         }
     }
 }
