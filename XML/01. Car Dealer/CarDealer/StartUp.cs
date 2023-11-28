@@ -39,7 +39,14 @@ namespace CarDealer
             //Console.WriteLine(GetCarsWithDistance(context));
 
             //15
-            Console.WriteLine(GetCarsFromMakeBmw(context));
+            //Console.WriteLine(GetCarsFromMakeBmw(context));
+
+            //16.
+            // Console.WriteLine(GetLocalSuppliers(context));
+
+            //17.
+            Console.WriteLine(GetCarsWithTheirListOfParts(context));
+
         }
         public static Mapper GetMapper()
         {
@@ -190,6 +197,60 @@ namespace CarDealer
             using (StringWriter writer = new StringWriter(sb))
             {
                 xmlSerializer.Serialize(writer, carsBMW, ns);
+            }
+            return sb.ToString().TrimEnd();
+        }
+
+        //16.
+        public static string GetLocalSuppliers(CarDealerContext context)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(ExportLocalSuppliersDTO[]), new XmlRootAttribute("suppliers"));
+
+            var localSuppliers = context.Suppliers.Where(s=> s.IsImporter == false).
+                Select(s => new ExportLocalSuppliersDTO
+                {
+                    Id = s.Id,  
+                    Name = s.Name,
+                    PartsCount = s.Parts.Count()
+                }).ToArray();
+
+            StringBuilder sb = new();
+            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+            ns.Add(string.Empty, string.Empty);
+            using (StringWriter sw = new StringWriter(sb))
+            {
+                xmlSerializer.Serialize(sw, localSuppliers, ns);
+            }
+            return sb.ToString().TrimEnd();
+        }
+
+        //17.
+        public static string GetCarsWithTheirListOfParts(CarDealerContext context)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(ExportCarsWithPartsDTO[]), new XmlRootAttribute("cars"));
+
+            var carsWithParts = context.Cars.
+                OrderByDescending(c => c.TraveledDistance).ThenBy(c => c.Model).
+                Take(5).
+                Select(c => new ExportCarsWithPartsDTO()
+                {
+                    Make = c.Make,
+                    Model = c.Model,
+                    TraveledDistance = c.TraveledDistance,
+                    Parts = c.PartsCars.Select(pc => new PartsDTO()
+                    {
+                        Name = pc.Part.Name,
+                        Price = pc.Part.Price,
+                    }).OrderByDescending(pc => pc.Price).
+                    ToArray()
+
+                }).ToArray();
+            StringBuilder sb = new StringBuilder();
+            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+            ns.Add(string.Empty, string.Empty);
+            using (StringWriter sw = new StringWriter(sb))
+            {
+                xmlSerializer.Serialize(sw, carsWithParts, ns);
             }
             return sb.ToString().TrimEnd();
         }
