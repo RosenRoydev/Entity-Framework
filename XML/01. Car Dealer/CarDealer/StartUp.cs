@@ -45,7 +45,10 @@ namespace CarDealer
             // Console.WriteLine(GetLocalSuppliers(context));
 
             //17.
-            Console.WriteLine(GetCarsWithTheirListOfParts(context));
+            // Console.WriteLine(GetCarsWithTheirListOfParts(context));
+
+            //18.
+            Console.WriteLine(GetTotalSalesByCustomer(context));
 
         }
         public static Mapper GetMapper()
@@ -57,7 +60,7 @@ namespace CarDealer
         //9.
         public static string ImportSuppliers(CarDealerContext context, string inputXml)
         {
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(ImportSupplierDTO[]),new XmlRootAttribute("Suppliers"));
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(ImportSupplierDTO[]), new XmlRootAttribute("Suppliers"));
             using var reader = new StringReader(inputXml);
             ImportSupplierDTO[] importSuppliersDTO = (ImportSupplierDTO[])xmlSerializer.Deserialize(reader);
             var mapper = GetMapper();
@@ -76,10 +79,10 @@ namespace CarDealer
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(ImportPartsDTO[]), new XmlRootAttribute("Parts"));
             using var reader = new StringReader(inputXml);
             ImportPartsDTO[] importParts = (ImportPartsDTO[])xmlSerializer.Deserialize(reader);
-            var suppliersIds= context.Suppliers.Select(x => x.Id).ToArray();
+            var suppliersIds = context.Suppliers.Select(x => x.Id).ToArray();
 
             var mapper = GetMapper();
-            Part[]  parts = mapper.Map<Part[]>(importParts.Where(p =>suppliersIds.Contains(p.SupplierId)));
+            Part[] parts = mapper.Map<Part[]>(importParts.Where(p => suppliersIds.Contains(p.SupplierId)));
             context.AddRange(parts);
             context.SaveChanges();
             return $"Successfully imported {parts.Count()}";
@@ -97,7 +100,7 @@ namespace CarDealer
 
             foreach (var carDTO in importCarsDTOs)
             {
-               Car car = mapper.Map<Car>(carDTO);
+                Car car = mapper.Map<Car>(carDTO);
                 var partIds = carDTO.PartIds.Select(c => c.Id).Distinct().ToArray();
 
                 List<PartCar> parts = new List<PartCar>();
@@ -125,7 +128,7 @@ namespace CarDealer
             ImportCustomersDTO[] importCustomersDTOs = (ImportCustomersDTO[])xmlSerializer.Deserialize(reader);
 
             var mapper = GetMapper();
-           var customers = mapper.Map<Customer[]>(importCustomersDTOs);
+            var customers = mapper.Map<Customer[]>(importCustomersDTOs);
 
             context.Customers.AddRange(customers);
             context.SaveChanges();
@@ -139,8 +142,8 @@ namespace CarDealer
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(ImportSalesDTO[]), new XmlRootAttribute("Sales"));
             using var reader = new StringReader(inputXml);
             ImportSalesDTO[] importSales = (ImportSalesDTO[])xmlSerializer.Deserialize(reader);
-            
-            var carIds = context.Cars.Select(c  => c.Id).ToList();
+
+            var carIds = context.Cars.Select(c => c.Id).ToList();
             var mapper = GetMapper();
 
             Sale[] sales = mapper.Map<Sale[]>(importSales.Where(s => carIds.Contains(s.CarId)));
@@ -155,7 +158,7 @@ namespace CarDealer
         public static string GetCarsWithDistance(CarDealerContext context)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(ExportCarsWithDistanceDTO[]), new XmlRootAttribute("cars"));
-            
+
             var cars = context.Cars.Where(c => c.TraveledDistance > 2000000).
                 OrderBy(c => c.Make).ThenBy(c => c.Model).
                 Select(c => new ExportCarsWithDistanceDTO
@@ -206,10 +209,10 @@ namespace CarDealer
         {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(ExportLocalSuppliersDTO[]), new XmlRootAttribute("suppliers"));
 
-            var localSuppliers = context.Suppliers.Where(s=> s.IsImporter == false).
+            var localSuppliers = context.Suppliers.Where(s => s.IsImporter == false).
                 Select(s => new ExportLocalSuppliersDTO
                 {
-                    Id = s.Id,  
+                    Id = s.Id,
                     Name = s.Name,
                     PartsCount = s.Parts.Count()
                 }).ToArray();
@@ -252,6 +255,46 @@ namespace CarDealer
             {
                 xmlSerializer.Serialize(sw, carsWithParts, ns);
             }
+            return sb.ToString().TrimEnd();
+        }
+
+        //18.
+        public static string GetTotalSalesByCustomer(CarDealerContext context)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(ExportCustomersDTO[]), new XmlRootAttribute("customers"));
+
+            var salesDTO = context.Customers.Where(c => c.Sales.Any()).
+                Select(c => new
+                {
+                    FullName = c.Name,
+                    BoughtCars = c.Sales.Count(),
+                    InfoForSales = c.Sales.Select(s => new
+                    {
+                        Prices = c.IsYoungDriver ?
+                        s.Car.PartsCars.Sum(pc => Math.Round((double)pc.Part.Price, 2))
+                        : s.Car.PartsCars.Sum(pc => (double)pc.Part.Price)
+
+                    }).ToArray()
+
+                }).ToArray();
+
+            var totalSales = salesDTO.OrderByDescending(t => t.InfoForSales.Sum(s => s.Prices))
+                .Select(t => new ExportCustomersDTO()
+                {
+                    FullName = t.FullName,
+                    BoughtCars = t.BoughtCars,
+                    SpentMoney = t.InfoForSales.Sum(s => s.Prices).ToString("f2")
+                })
+                .ToArray();
+
+            StringBuilder sb = new StringBuilder();
+            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+            ns.Add(string.Empty, string.Empty);
+            using(StringWriter sw = new StringWriter(sb))
+            {
+                xmlSerializer.Serialize(sw, totalSales, ns);
+            }
+
             return sb.ToString().TrimEnd();
         }
     }
