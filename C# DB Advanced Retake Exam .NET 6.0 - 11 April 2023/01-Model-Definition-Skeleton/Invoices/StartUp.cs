@@ -14,9 +14,9 @@ namespace Invoices
 
             var projectDir = GetProjectDirectory();
 
-            //ImportEntities(context, projectDir + @"Datasets/", projectDir + @"ImportResults/");
+            ImportEntities(context, projectDir + @"Datasets/", projectDir + @"ImportResults/");
 
-            //ExportEntities(context, projectDir + @"ExportResults/");
+            ExportEntities(context, projectDir + @"ExportResults/");
 
             using (var transaction = context.Database.BeginTransaction())
             {
@@ -24,36 +24,36 @@ namespace Invoices
             }
         }
 
-        //private static void ImportEntities(InvoicesContext context, string baseDir, string exportDir)
-        //{
-        //    var clients =
-        //        DataProcessor.Deserializer.ImportClients(context,
-        //            File.ReadAllText(baseDir + "clients.xml"));
-        //    PrintAndExportEntityToFile(clients, exportDir + "Actual Result - ImportClients.txt");
+        private static void ImportEntities(InvoicesContext context, string baseDir, string exportDir)
+        {
+            var clients =
+                DataProcessor.Deserializer.ImportClients(context,
+                    File.ReadAllText(baseDir + "clients.xml"));
+            PrintAndExportEntityToFile(clients, exportDir + "Actual Result - ImportClients.txt");
 
-        //    var invoices =
-        //        DataProcessor.Deserializer.ImportInvoices(context,
-        //            File.ReadAllText(baseDir + "invoices.json"));
-        //    PrintAndExportEntityToFile(invoices, exportDir + "Actual Result - ImportInvoices.txt");
+            var invoices =
+               DataProcessor.Deserializer.ImportInvoices(context,
+                    File.ReadAllText(baseDir + "invoices.json"));
+            PrintAndExportEntityToFile(invoices, exportDir + "Actual Result - ImportInvoices.txt");
 
-        //    var products =
-        //     DataProcessor.Deserializer.ImportProducts(context,
-        //         File.ReadAllText(baseDir + "products.json"));
-        //    PrintAndExportEntityToFile(products, exportDir + "Actual Result - ImportProducts.txt");
-        //}
+            var products =
+             DataProcessor.Deserializer.ImportProducts(context,
+                 File.ReadAllText(baseDir + "products.json"));
+            PrintAndExportEntityToFile(products, exportDir + "Actual Result - ImportProducts.txt");
+        }
 
-        //private static void ExportEntities(InvoicesContext context, string exportDir)
-        //{
-        //    DateTime date = DateTime.ParseExact("01/12/2022", "dd/MM/yyyy", CultureInfo.InvariantCulture);
-        //    var exportClientsWithTheirInvoices = DataProcessor.Serializer.ExportClientsWithTheirInvoices(context, date);
-        //    Console.WriteLine(exportClientsWithTheirInvoices);
-        //    File.WriteAllText(exportDir + "Actual Result - ExportClientsWithTheirInvoices.xml", exportClientsWithTheirInvoices);
+        private static void ExportEntities(InvoicesContext context, string exportDir)
+        {
+            DateTime date = DateTime.ParseExact("01/12/2022", "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            var exportClientsWithTheirInvoices = DataProcessor.Serializer.ExportClientsWithTheirInvoices(context, date);
+            Console.WriteLine(exportClientsWithTheirInvoices);
+            File.WriteAllText(exportDir + "Actual Result - ExportClientsWithTheirInvoices.xml", exportClientsWithTheirInvoices);
 
-        //    var nameLength = 11;
-        //    var exportProductsWithMostClients = DataProcessor.Serializer.ExportProductsWithMostClients(context, nameLength);
-        //    Console.WriteLine(exportProductsWithMostClients);
-        //    File.WriteAllText(exportDir + "Actual Result - ExportProductsWithMostClients.json", exportProductsWithMostClients);
-        //}
+            var nameLength = 11;
+           var exportProductsWithMostClients = DataProcessor.Serializer.ExportProductsWithMostClients(context, nameLength);
+           Console.WriteLine(exportProductsWithMostClients);
+            File.WriteAllText(exportDir + "Actual Result - ExportProductsWithMostClients.json", exportProductsWithMostClients);
+        }
 
         private static void ResetDatabase(InvoicesContext context, bool shouldDropDatabase = false)
         {

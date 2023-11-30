@@ -6,9 +6,9 @@ namespace Invoices.Data.Models
     {
         public Client() 
         { 
-            ICollection<Invoice> invoices = new HashSet<Invoice>();
-            ICollection<Address> addresses = new HashSet<Address>();
-            ICollection<ProductClient> productsClients = new HashSet<ProductClient>();
+           Invoices = new List<Invoice>();
+           Addresses = new List<Address>();
+           ProductsClients = new List<ProductClient>();
         }
         [Key]
         public int Id { get; set; }
@@ -21,7 +21,7 @@ namespace Invoices.Data.Models
         [MaxLength(15)]
         public string NumberVat { get; set; }
 
-        public virtual ICollection<Invoice> Invoices { get;}
+        public virtual ICollection<Invoice> Invoices { get; set; }
         public virtual ICollection<Address> Addresses { get; set; }
         public virtual ICollection<ProductClient> ProductsClients { get; set; }
     }

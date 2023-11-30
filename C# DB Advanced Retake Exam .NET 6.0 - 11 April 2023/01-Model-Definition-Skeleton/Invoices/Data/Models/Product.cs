@@ -10,6 +10,10 @@ namespace Invoices.Data.Models
 {
     public class Product
     {
+        public Product() 
+        { 
+            ProductsClients = new List<ProductClient>();
+        }
         [Key]
         public int Id { get; set; }
 
