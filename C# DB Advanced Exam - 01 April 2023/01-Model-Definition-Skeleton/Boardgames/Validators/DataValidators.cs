@@ -9,9 +9,10 @@ namespace Boardgames.Validators
     public static class DataValidators
     {
         public const int MaxlenghtName = 20;
+        public const int BoardgameNameMinLenght = 10;
 
         public const double MinRating = 1.00;
-        public const double Maxraying = 10.00;
+        public const double MaxRating = 10.00;
 
         public const int MinYear = 2018;
         public const int MaxYear = 2023;
