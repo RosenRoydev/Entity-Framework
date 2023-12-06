@@ -12,6 +12,7 @@ Successfully imported patient - Anton Popov with 3 medicines.
 Successfully imported patient - Ivelina Todorova with 2 medicines.
 Successfully imported patient - Kaloyan Mihaylov with 3 medicines.
 Successfully imported patient - Nikolina Petrova with 2 medicines.
+Invalid Data!
 Successfully imported patient - Todor Aleksandrov with 2 medicines.
 Successfully imported patient - Anastasiya Ilieva with 3 medicines.
 Successfully imported patient - Borislava Kostova with 5 medicines.

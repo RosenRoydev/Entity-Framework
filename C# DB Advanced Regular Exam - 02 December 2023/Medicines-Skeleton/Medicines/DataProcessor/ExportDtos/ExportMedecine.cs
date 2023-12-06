@@ -3,11 +3,14 @@ using System.Xml.Serialization;
 
 namespace Medicines.DataProcessor.ExportDtos
 {
-    [XmlType("medicine")]
+    [XmlType("Medicine")]
     public class ExportMedecine
     {
         [XmlAttribute("Category")]
         public string Category { get; set; }
+
+        [XmlElement("Name")]
+        public string Name { get; set; }
 
         [XmlElement("Price")]
         public string Price { get; set; }

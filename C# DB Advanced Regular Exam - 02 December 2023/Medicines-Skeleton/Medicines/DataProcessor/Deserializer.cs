@@ -37,14 +37,14 @@
                     Gender = (Gender)importPatient.Gender,
 
                 };
-                foreach (var mId in importPatient.Medicines.Distinct())
+                foreach (var mId in importPatient.Medicines)
                 {
-                    if (!IsValid(mId) || !medicinesIds.Contains(mId))
+                    if (patient.PatientsMedicines.Any(pm => pm.MedicineId == mId))
                     {
                         sb.AppendLine(ErrorMessage);
                         continue;
                     }
-
+                     
                     patient.PatientsMedicines.Add(new PatientMedicine
                     {
                         MedicineId = mId,

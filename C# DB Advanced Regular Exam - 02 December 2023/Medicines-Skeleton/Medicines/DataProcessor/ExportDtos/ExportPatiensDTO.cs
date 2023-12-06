@@ -18,7 +18,7 @@ namespace Medicines.DataProcessor.ExportDtos
         public string Gender { get; set; } = null!;
 
         [XmlElement("Name")]
-        public string Name { get; set; } = null!;
+        public string FullName { get; set; } = null!;
 
         [XmlElement("AgeGroup")]
         public string AgeGroup { get; set; } = null!;

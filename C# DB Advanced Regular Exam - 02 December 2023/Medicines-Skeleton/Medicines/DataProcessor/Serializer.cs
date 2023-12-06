@@ -5,7 +5,9 @@
     using Medicines.Data.Models.Enums;
     using Medicines.DataProcessor.ExportDtos;
     using Newtonsoft.Json;
+    using System.Collections.Specialized;
     using System.Diagnostics;
+    using System.Globalization;
     using System.Text;
     using System.Xml.Linq;
     using System.Xml.Serialization;
@@ -16,31 +18,54 @@
         {
             StringBuilder sb = new();
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(ExportPatiensDTO[]),new XmlRootAttribute("Patients"));
-
-            var patientsWithMedicaments = context.Patients.
-                Where(p => p.PatientsMedicines.Any(pm => pm.Medicine.ProductionDate.ToString("yyyy-mm-dd") != date)).
+            DateTime dateForCompare = DateTime.ParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            var patientsWithMedicaments = context.Patients.AsEnumerable().
+                Where( p => p.PatientsMedicines.Any(pm =>  pm.Medicine.ProductionDate > dateForCompare)).
                 Select(p => new ExportPatiensDTO
                 {
-                    Gender = p.Gender.ToString(),
-                    Name = p.FullName,
+                    Gender = p.Gender.ToString().ToLower(),
+                    FullName = p.FullName,
                     AgeGroup = p.AgeGroup.ToString(),
-                    Medecines = p.PatientsMedicines.
+                    Medecines = p.PatientsMedicines.Where(pm => pm.Medicine.ProductionDate > dateForCompare).
+                    OrderByDescending(pm => pm.Medicine.ExpiryDate).ThenBy(pm=> pm.Medicine.Price).
                     Select(pm => new ExportMedecine
                     {
-                        Category = pm.Medicine.Category.ToString(),
+                        Category = pm.Medicine.Category.ToString().ToLower(),
+                        Name = pm.Medicine.Name,
                         Price = pm.Medicine.Price.ToString("f2"),
                         Producer = pm.Medicine.Producer,
-                        BestBefore = pm.Medicine.ExpiryDate.ToString("yyyy-mm-dd")
-                    }).OrderByDescending(pm=> pm.BestBefore).ThenBy(pm => pm.Price).ToArray()
+                        BestBefore = pm.Medicine.ExpiryDate.ToString("yyyy-MM-dd",CultureInfo.InvariantCulture)
+                    }).ToArray()
 
-                    //            Medicine Category = "antiseptic" >
-                    //< Name > Ciprofloxacin </ Name >
-                    //< Price > 19.20 </ Price >
-                    //< Producer > ReliefMed Labs </ Producer >
-                    //< BestBefore > 2025 - 07 - 22 </ BestBefore
+                    
 
-                }).OrderByDescending(p=> p.Medecines.Count()).ThenBy(p => p.Name)
+                }).OrderByDescending(p=> p.Medecines.Count()).ThenBy(p => p.FullName)
                 .ToArray();
+            //var patients = context.Patients
+            //       .AsEnumerable()
+            //       .Where(p => p.PatientsMedicines.Any(pm => pm.Medicine.ProductionDate > productionDate))
+            //       .Select(p => new ExportPatientDto()
+            //       {
+            //           Gender = p.Gender.ToString().ToLower(),
+            //           FullName = p.FullName,
+            //           AgeGroup = p.AgeGroup.ToString(),
+            //           Medicines = p.PatientsMedicines
+            //           .Where(pm => pm.Medicine.ProductionDate > productionDate)
+            //           .OrderByDescending(pm => pm.Medicine.ExpiryDate)
+            //           .ThenBy(pm => pm.Medicine.Price)
+            //           .Select(pm => new ExportMedicineDto()
+            //           {
+            //               Category = pm.Medicine.Category.ToString().ToLower(),
+            //               Name = pm.Medicine.Name,
+            //               Price = $"{pm.Medicine.Price:f2}",
+            //               Producer = pm.Medicine.Producer,
+            //               BestBefore = pm.Medicine.ExpiryDate.ToString("yyyy-MM-dd")
+            //           })
+            //           .ToArray()
+            //       })
+            //       .OrderByDescending(p => p.Medicines.Count())
+            //       .ThenBy(p => p.FullName)
+            //       .ToArray();
 
             XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
             ns.Add(string.Empty, String.Empty);
@@ -55,9 +80,12 @@
 
         }
 
+       
+
+
         public static string ExportMedicinesFromDesiredCategoryInNonStopPharmacies(MedicinesContext context, int medicineCategory)
         {
-            var medicinesNonStop = context.Medicines.
+            var medicinesNonStop = context.Medicines.AsEnumerable().
                 Where(m => m.Category == (Category)medicineCategory).Where(m => m.Pharmacy.IsNonStop == true).
                 Select(m => new
                 {
